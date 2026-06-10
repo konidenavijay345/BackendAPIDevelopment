@@ -1,19 +1,35 @@
-package main.java.com.example.backendapi.config;
+package com.example.backendapi.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/**
+ * Configures Cross-Origin Resource Sharing (CORS) for browser clients.
+ *
+ * <p>This class demonstrates interface implementation: {@link WebMvcConfigurer} defines
+ * extension points and this class supplies the application-specific behavior. CORS lets
+ * approved websites call the API while browsers block unapproved origins.</p>
+ */
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
     private final String[] allowedOrigins;
 
+    /**
+     * Converts the comma-separated configuration value into origins understood by Spring.
+     * Constructor injection keeps configuration explicit and makes the class testable.
+     */
     public WebConfig(@Value("${app.cors.allowed-origins}") String allowedOrigins) {
         this.allowedOrigins = allowedOrigins.split(",");
     }
 
+    /**
+     * Applies CORS rules to API routes and caches browser preflight decisions for one hour.
+     *
+     * @param registry Spring's registry used to define browser access rules
+     */
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**")

@@ -9,6 +9,12 @@ import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
 
+/**
+ * Immutable input for product creation and replacement.
+ *
+ * <p>A separate request DTO prevents clients from setting protected fields such as owner, ID,
+ * and timestamps. Validation gives users clear feedback before database work begins.</p>
+ */
 public record ProductRequest(
         @NotBlank @Size(max = 150) String name,
         @NotBlank @Size(max = 64) String sku,

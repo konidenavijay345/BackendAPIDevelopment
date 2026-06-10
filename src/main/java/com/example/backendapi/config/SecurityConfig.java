@@ -18,9 +18,23 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import java.time.Instant;
 import java.util.Map;
 
+/**
+ * Central Spring Security configuration for the API.
+ *
+ * <p>The class uses dependency injection and bean configuration to separate security policy
+ * from business code. Stateless JWT security scales well because any application instance can
+ * verify a request without sharing an HTTP session.</p>
+ */
 @Configuration
 public class SecurityConfig {
 
+    /**
+     * Builds the HTTP security filter chain.
+     *
+     * <p>Authentication endpoints and health checks are public; every other request requires
+     * authentication. CSRF is disabled because credentials are sent explicitly as bearer tokens,
+     * not automatically as browser cookies.</p>
+     */
     @Bean
     SecurityFilterChain securityFilterChain(
             HttpSecurity http, JwtAuthenticationFilter jwtFilter, ObjectMapper objectMapper
@@ -44,16 +58,26 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * Provides BCrypt password hashing. BCrypt includes a salt and work factor, making stolen
+     * password hashes substantially harder to crack than plain or fast hashes.
+     */
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Exposes Spring's authentication coordinator for the login service.
+     */
     @Bean
     AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
 
+    /**
+     * Writes a stable JSON error contract for failures raised before controllers execute.
+     */
     private void writeError(
             HttpServletResponse response, ObjectMapper objectMapper, int status,
             String error, String message, String path

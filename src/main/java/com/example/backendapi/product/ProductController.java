@@ -19,16 +19,24 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 import java.security.Principal;
 
+/**
+ * REST controller for authenticated product operations.
+ *
+ * <p>The {@link Principal} comes from JWT authentication and supplies a trusted identity. Owner
+ * IDs are never accepted from request JSON, preventing clients from assigning records to others.</p>
+ */
 @RestController
 @RequestMapping("/api/v1/products")
 public class ProductController {
 
     private final ProductService service;
 
+    /** Creates the HTTP adapter with its product use-case service. */
     public ProductController(ProductService service) {
         this.service = service;
     }
 
+    /** Creates a product for the authenticated user and returns 201 with its resource location. */
     @PostMapping
     public ResponseEntity<ProductResponse> create(
             @Valid @RequestBody ProductRequest request,
@@ -40,6 +48,7 @@ public class ProductController {
         return ResponseEntity.created(location).body(created);
     }
 
+    /** Returns a paginated list containing only the authenticated user's products. */
     @GetMapping
     public Page<ProductResponse> findAll(
             @PageableDefault(size = 20, sort = "id") Pageable pageable, Principal principal
@@ -47,11 +56,13 @@ public class ProductController {
         return service.findAll(principal.getName(), pageable);
     }
 
+    /** Returns one owned product or 404 when it is unavailable to this user. */
     @GetMapping("/{id}")
     public ProductResponse findById(@PathVariable Long id, Principal principal) {
         return service.findById(principal.getName(), id);
     }
 
+    /** Replaces editable fields on an owned product after input validation. */
     @PutMapping("/{id}")
     public ProductResponse update(
             @PathVariable Long id, @Valid @RequestBody ProductRequest request, Principal principal
@@ -59,6 +70,7 @@ public class ProductController {
         return service.update(principal.getName(), id, request);
     }
 
+    /** Deletes an owned product and returns 204 because no response body is needed. */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id, Principal principal) {
         service.delete(principal.getName(), id);

@@ -14,12 +14,20 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+/**
+ * Converts a bearer JWT into Spring Security authentication for each HTTP request.
+ *
+ * <p>Extending {@link OncePerRequestFilter} is inheritance: this class reuses Spring's filter
+ * lifecycle and overrides only the authentication behavior. Users benefit because protected
+ * endpoints receive a trustworthy identity without repeating token code in every controller.</p>
+ */
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
 
+    /** Injects token verification and user lookup services. */
     public JwtAuthenticationFilter(JwtService jwtService, UserDetailsService userDetailsService) {
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
@@ -54,3 +62,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 }
+    /**
+     * Reads the Authorization header, validates the JWT, and stores the authenticated principal
+     * in the request's security context. Invalid tokens are left unauthenticated and are converted
+     * to a standard 401 response by Spring Security.
+     */
