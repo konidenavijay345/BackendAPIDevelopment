@@ -1,0 +1,54 @@
+{
+  "info": {
+    "name": "Product CRUD API",
+    "description": "Local Spring Boot and MySQL CRUD requests.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "productId", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "Create product",
+      "event": [{
+        "listen": "test",
+        "script": { "exec": [
+          "pm.test('Created', () => pm.response.to.have.status(201));",
+          "if (pm.response.code === 201) pm.collectionVariables.set('productId', pm.response.json().id);"
+        ] }
+      }],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Mechanical Keyboard\",\n  \"sku\": \"KEY-{{$timestamp}}\",\n  \"description\": \"Hot-swappable mechanical keyboard\",\n  \"price\": 89.99,\n  \"quantity\": 25\n}" },
+        "url": "{{baseUrl}}/api/v1/products"
+      }
+    },
+    {
+      "name": "List products",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/v1/products?page=0&size=20&sort=id,asc" }
+    },
+    {
+      "name": "Get product by ID",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/v1/products/{{productId}}" }
+    },
+    {
+      "name": "Update product",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Mechanical Keyboard Pro\",\n  \"sku\": \"KEY-UPDATED-001\",\n  \"description\": \"Updated product\",\n  \"price\": 99.99,\n  \"quantity\": 30\n}" },
+        "url": "{{baseUrl}}/api/v1/products/{{productId}}"
+      }
+    },
+    {
+      "name": "Delete product",
+      "request": { "method": "DELETE", "url": "{{baseUrl}}/api/v1/products/{{productId}}" }
+    },
+    {
+      "name": "Health check",
+      "request": { "method": "GET", "url": "{{baseUrl}}/actuator/health" }
+    }
+  ]
+}
