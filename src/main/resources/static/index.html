@@ -8,74 +8,230 @@
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <main class="shell">
-    <section class="topbar">
-      <div>
-        <h1>Backend API Tester</h1>
-        <p id="baseUrl"></p>
-      </div>
-      <div class="status">
-        <span id="authState">Not logged in</span>
-        <button id="clearTokenBtn" type="button">Clear JWT</button>
-      </div>
-    </section>
-
-    <section class="grid">
-      <form id="registerForm" class="panel">
-        <h2>Register</h2>
-        <label>Name<input name="name" value="Vijay" autocomplete="name"></label>
-        <label>Email<input name="email" type="email" value="" autocomplete="email"></label>
-        <label>Password<input name="password" type="password" value="Password@123" autocomplete="new-password"></label>
-        <button type="submit">Register and Save JWT</button>
-      </form>
-
-      <form id="loginForm" class="panel">
-        <h2>Login</h2>
-        <label>Email<input name="email" type="email" autocomplete="email"></label>
-        <label>Password<input name="password" type="password" value="Password@123" autocomplete="current-password"></label>
-        <button type="submit">Login and Save JWT</button>
-      </form>
-    </section>
-
-    <section class="panel token-panel">
-      <div class="panel-head">
-        <h2>JWT Storage</h2>
-        <button id="copyTokenBtn" type="button">Copy JWT</button>
-      </div>
-      <p>Storage key: <code>backendApiJwt</code></p>
-      <textarea id="tokenBox" rows="4" spellcheck="false"></textarea>
-    </section>
-
-    <section class="grid">
-      <form id="productForm" class="panel">
-        <h2>Create / Update Product</h2>
-        <input name="id" type="hidden">
-        <label>Name<input name="name" value="Mechanical Keyboard"></label>
-        <label>SKU<input name="sku" value=""></label>
-        <label>Description<textarea name="description" rows="3">Hot-swappable mechanical keyboard</textarea></label>
-        <label>Price<input name="price" type="number" min="0" step="0.01" value="89.99"></label>
-        <label>Quantity<input name="quantity" type="number" min="0" step="1" value="25"></label>
-        <div class="actions">
-          <button type="submit">Save Product</button>
-          <button id="resetProductBtn" type="button">New Product</button>
+  <main class="postman-shell">
+    <aside class="workspace-sidebar">
+      <div class="brand-block">
+        <span class="brand-mark">API</span>
+        <div>
+          <h1>Backend API Tester</h1>
+          <p>Workspace</p>
         </div>
-      </form>
+      </div>
 
-      <section class="panel">
-        <div class="panel-head">
-          <h2>Products</h2>
-          <button id="refreshProductsBtn" type="button">Refresh</button>
-        </div>
-        <div id="products" class="products"></div>
+      <section class="sidebar-section">
+        <h2>Collections</h2>
+        <button class="collection-item active" type="button" data-template-shortcut="health">
+          <span>GET</span>
+          <strong>Health Check</strong>
+        </button>
+        <button class="collection-item" type="button" data-template-shortcut="register">
+          <span>POST</span>
+          <strong>Register</strong>
+        </button>
+        <button class="collection-item" type="button" data-template-shortcut="login">
+          <span>POST</span>
+          <strong>Login</strong>
+        </button>
+        <button class="collection-item" type="button" data-template-shortcut="listProducts">
+          <span>GET</span>
+          <strong>List Products</strong>
+        </button>
+        <button class="collection-item" type="button" data-template-shortcut="createProduct">
+          <span>POST</span>
+          <strong>Create Product</strong>
+        </button>
+        <button class="collection-item" type="button" data-template-shortcut="updateProduct">
+          <span>PUT</span>
+          <strong>Update Product</strong>
+        </button>
+        <button class="collection-item" type="button" data-template-shortcut="deleteProduct">
+          <span>DEL</span>
+          <strong>Delete Product</strong>
+        </button>
       </section>
-    </section>
 
-    <section class="panel">
-      <div class="panel-head">
-        <h2>Last Response</h2>
-        <button id="clearOutputBtn" type="button">Clear</button>
-      </div>
-      <pre id="output"></pre>
+      <section class="sidebar-section">
+        <div class="sidebar-head">
+          <h2>History</h2>
+          <button id="clearHistoryBtn" type="button">Clear</button>
+        </div>
+        <div id="requestHistory" class="history-list"></div>
+      </section>
+    </aside>
+
+    <section class="workspace-main">
+      <header class="workspace-topbar">
+        <div>
+          <p id="baseUrl" class="base-url"></p>
+          <div class="environment-line">
+            <span id="connectionMode">Detecting</span>
+            <span id="connectionMeta">Current browser origin</span>
+          </div>
+        </div>
+        <div class="topbar-status">
+          <span id="serverState" class="pill muted">Checking server</span>
+          <span id="authState" class="pill muted">Not logged in</span>
+          <button id="clearTokenBtn" type="button">Clear JWT</button>
+        </div>
+      </header>
+
+      <section class="status-strip">
+        <div class="metric">
+          <span>Server</span>
+          <strong id="serverHealth">Checking</strong>
+          <small id="serverHealthMeta">Waiting for health check</small>
+        </div>
+        <div class="metric">
+          <span>Environment</span>
+          <strong id="environmentName">Current Origin</strong>
+          <small id="environmentMeta">Auto-detected from browser</small>
+        </div>
+        <div class="metric">
+          <span>Last Request</span>
+          <strong id="lastRequestState">Idle</strong>
+          <small id="lastRequestMeta">No request started</small>
+        </div>
+      </section>
+
+      <section class="request-workbench">
+        <div class="request-tabs">
+          <button class="request-tab active" type="button">Untitled Request</button>
+          <button class="request-tab" type="button" data-template-shortcut="listProducts">Products</button>
+          <button class="request-tab" type="button" data-template-shortcut="login">Auth</button>
+        </div>
+
+        <div class="request-toolbar">
+          <select id="requestTemplate">
+            <option value="">Select request</option>
+            <option value="health">Health Check</option>
+            <option value="register">Register</option>
+            <option value="login">Login</option>
+            <option value="listProducts">List Products</option>
+            <option value="createProduct">Create Product</option>
+            <option value="updateProduct">Update Product</option>
+            <option value="deleteProduct">Delete Product</option>
+          </select>
+          <button id="copyCurlBtn" type="button">Copy cURL</button>
+        </div>
+
+        <form id="requestBuilder" class="request-builder">
+          <div class="request-line">
+            <select id="requestMethod" name="method" aria-label="HTTP method">
+              <option>GET</option>
+              <option>POST</option>
+              <option>PUT</option>
+              <option>DELETE</option>
+            </select>
+            <input id="requestPath" name="path" value="/api/v1/products?page=0&size=5&sort=id,desc" autocomplete="off" aria-label="Request URL or path">
+            <button id="sendRequestBtn" type="submit">Send</button>
+          </div>
+
+          <div class="builder-tabs">
+            <a href="#params-panel">Params</a>
+            <a href="#auth-panel">Auth</a>
+            <a href="#headers-panel">Headers</a>
+            <a href="#body-panel">Body</a>
+          </div>
+
+          <div class="builder-grid">
+            <label id="params-panel">Query Params<textarea id="queryParamsInput" rows="7" spellcheck="false" placeholder="page=0&#10;size=5"></textarea></label>
+            <label id="headers-panel">Headers<textarea id="headersInput" rows="7" spellcheck="false" placeholder="Content-Type: application/json"></textarea></label>
+            <label id="body-panel" class="body-editor">JSON Body<textarea id="bodyInput" rows="16" spellcheck="false"></textarea></label>
+            <div id="auth-panel" class="auth-box">
+              <label class="check-row"><input id="includeAuthHeader" type="checkbox" checked> Include saved JWT as Bearer token</label>
+              <p>Storage key: <code>backendApiJwt</code></p>
+              <textarea id="tokenBox" rows="6" spellcheck="false"></textarea>
+              <div class="inline-actions">
+                <button id="copyTokenBtn" type="button">Copy JWT</button>
+                <button id="formatBodyBtn" type="button">Format JSON</button>
+                <button id="clearRequestBtn" type="button">Clear Request</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </section>
+
+      <section class="response-workbench">
+        <div class="response-head">
+          <h2>Response</h2>
+          <div class="response-summary">
+            <span id="responseStatus" class="pill muted">No response</span>
+            <span id="responseTime">Time: -</span>
+            <span id="responseSize">Size: -</span>
+          </div>
+        </div>
+
+        <div class="tabs">
+          <button class="tab-btn active" type="button" data-response-tab="body">Body</button>
+          <button class="tab-btn" type="button" data-response-tab="headers">Headers</button>
+          <button class="tab-btn" type="button" data-response-tab="raw">Raw</button>
+        </div>
+        <pre id="responseBody" class="response-pane"></pre>
+        <pre id="responseHeaders" class="response-pane hidden"></pre>
+        <pre id="responseRaw" class="response-pane hidden"></pre>
+      </section>
+
+      <section class="quick-panels">
+        <details>
+          <summary>Quick Auth and Product Forms</summary>
+          <div class="quick-grid">
+            <form id="registerForm" class="panel compact-panel">
+              <h2>Register</h2>
+              <label>Name<input name="name" value="Vijay" autocomplete="name"></label>
+              <label>Email<input name="email" type="email" value="" autocomplete="email"></label>
+              <label>Password<input name="password" type="password" value="Password@123" autocomplete="new-password"></label>
+              <button type="submit">Register and Save JWT</button>
+            </form>
+
+            <form id="loginForm" class="panel compact-panel">
+              <h2>Login</h2>
+              <label>Email<input name="email" type="email" autocomplete="email"></label>
+              <label>Password<input name="password" type="password" value="Password@123" autocomplete="current-password"></label>
+              <button type="submit">Login and Save JWT</button>
+            </form>
+
+            <form id="productForm" class="panel compact-panel">
+              <h2>Create / Update Product</h2>
+              <input name="id" type="hidden">
+              <label>Name<input name="name" value="Mechanical Keyboard"></label>
+              <label>SKU<input name="sku" value=""></label>
+              <label>Description<textarea name="description" rows="3">Hot-swappable mechanical keyboard</textarea></label>
+              <label>Price<input name="price" type="number" min="0" step="0.01" value="89.99"></label>
+              <label>Quantity<input name="quantity" type="number" min="0" step="1" value="25"></label>
+              <div class="inline-actions">
+                <button type="submit">Save Product</button>
+                <button id="resetProductBtn" type="button">New Product</button>
+              </div>
+            </form>
+
+            <section class="panel compact-panel">
+              <div class="panel-head">
+                <h2>Products</h2>
+                <button id="refreshProductsBtn" type="button">Refresh</button>
+              </div>
+              <div id="products" class="products"></div>
+            </section>
+          </div>
+        </details>
+      </section>
+
+      <section class="console-grid">
+        <section class="panel console-panel">
+          <div class="panel-head">
+            <h2>Last Response</h2>
+            <button id="clearOutputBtn" type="button">Clear</button>
+          </div>
+          <pre id="output"></pre>
+        </section>
+
+        <section class="panel console-panel">
+          <div class="panel-head">
+            <h2>Live Activity</h2>
+            <button id="clearLogsBtn" type="button">Clear Logs</button>
+          </div>
+          <div id="liveLogs" class="live-logs" aria-live="polite"></div>
+        </section>
+      </section>
     </section>
   </main>
 
