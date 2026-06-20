@@ -1,6 +1,9 @@
 package com.example.backendapi.config;
 
+import com.example.backendapi.audit.ApiLoggingFilter;
+import com.example.backendapi.audit.ApiLogService;
 import com.example.backendapi.security.JwtAuthenticationFilter;
+import com.example.backendapi.security.JwtService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
@@ -37,14 +40,19 @@ public class SecurityConfig {
      */
     @Bean
     SecurityFilterChain securityFilterChain(
-            HttpSecurity http, JwtAuthenticationFilter jwtFilter, ObjectMapper objectMapper
+            HttpSecurity http, JwtAuthenticationFilter jwtFilter,
+            ApiLogService apiLogService, JwtService jwtService, ObjectMapper objectMapper
     ) throws Exception {
+        ApiLoggingFilter apiLoggingFilter = new ApiLoggingFilter(apiLogService, jwtService);
         http
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> {})
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/auth/**", "/actuator/health").permitAll()
+                        .requestMatchers(
+                                "/", "/index.html", "/app.js", "/styles.css", "/favicon.ico",
+                                "/api/v1/auth/**", "/actuator/health"
+                        ).permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(errors -> errors
                         .authenticationEntryPoint((request, response, exception) -> writeError(
@@ -54,7 +62,8 @@ public class SecurityConfig {
                                 response, objectMapper, HttpServletResponse.SC_FORBIDDEN,
                                 "Forbidden", "You do not have permission to access this resource",
                                 request.getRequestURI())))
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(apiLoggingFilter, JwtAuthenticationFilter.class);
         return http.build();
     }
 

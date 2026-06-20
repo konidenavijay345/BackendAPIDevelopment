@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Backend API Tester</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <main class="shell">
+    <section class="topbar">
+      <div>
+        <h1>Backend API Tester</h1>
+        <p id="baseUrl"></p>
+      </div>
+      <div class="status">
+        <span id="authState">Not logged in</span>
+        <button id="clearTokenBtn" type="button">Clear JWT</button>
+      </div>
+    </section>
+
+    <section class="grid">
+      <form id="registerForm" class="panel">
+        <h2>Register</h2>
+        <label>Name<input name="name" value="Vijay" autocomplete="name"></label>
+        <label>Email<input name="email" type="email" value="" autocomplete="email"></label>
+        <label>Password<input name="password" type="password" value="Password@123" autocomplete="new-password"></label>
+        <button type="submit">Register and Save JWT</button>
+      </form>
+
+      <form id="loginForm" class="panel">
+        <h2>Login</h2>
+        <label>Email<input name="email" type="email" autocomplete="email"></label>
+        <label>Password<input name="password" type="password" value="Password@123" autocomplete="current-password"></label>
+        <button type="submit">Login and Save JWT</button>
+      </form>
+    </section>
+
+    <section class="panel token-panel">
+      <div class="panel-head">
+        <h2>JWT Storage</h2>
+        <button id="copyTokenBtn" type="button">Copy JWT</button>
+      </div>
+      <p>Storage key: <code>backendApiJwt</code></p>
+      <textarea id="tokenBox" rows="4" spellcheck="false"></textarea>
+    </section>
+
+    <section class="grid">
+      <form id="productForm" class="panel">
+        <h2>Create / Update Product</h2>
+        <input name="id" type="hidden">
+        <label>Name<input name="name" value="Mechanical Keyboard"></label>
+        <label>SKU<input name="sku" value=""></label>
+        <label>Description<textarea name="description" rows="3">Hot-swappable mechanical keyboard</textarea></label>
+        <label>Price<input name="price" type="number" min="0" step="0.01" value="89.99"></label>
+        <label>Quantity<input name="quantity" type="number" min="0" step="1" value="25"></label>
+        <div class="actions">
+          <button type="submit">Save Product</button>
+          <button id="resetProductBtn" type="button">New Product</button>
+        </div>
+      </form>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Products</h2>
+          <button id="refreshProductsBtn" type="button">Refresh</button>
+        </div>
+        <div id="products" class="products"></div>
+      </section>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Last Response</h2>
+        <button id="clearOutputBtn" type="button">Clear</button>
+      </div>
+      <pre id="output"></pre>
+    </section>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>

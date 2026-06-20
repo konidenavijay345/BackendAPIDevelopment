@@ -1,0 +1,167 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #f6f7f9;
+  color: #17202a;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.shell {
+  width: min(1180px, calc(100% - 32px));
+  margin: 24px auto;
+}
+
+.topbar,
+.panel {
+  background: #ffffff;
+  border: 1px solid #d9dee5;
+  border-radius: 8px;
+  padding: 18px;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+h1,
+h2,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 6px;
+  font-size: 26px;
+}
+
+h2 {
+  font-size: 18px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.token-panel,
+.panel {
+  margin-bottom: 16px;
+}
+
+.panel-head,
+.status,
+.actions,
+.row-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+label {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+input,
+textarea,
+button {
+  font: inherit;
+}
+
+input,
+textarea {
+  width: 100%;
+  margin-top: 6px;
+  border: 1px solid #c8d0da;
+  border-radius: 6px;
+  padding: 10px;
+}
+
+button {
+  border: 1px solid #1f5eff;
+  border-radius: 6px;
+  background: #1f5eff;
+  color: white;
+  padding: 9px 12px;
+  cursor: pointer;
+}
+
+button[type="button"] {
+  background: #ffffff;
+  color: #1f5eff;
+}
+
+code,
+pre,
+textarea {
+  font-family: Consolas, Monaco, monospace;
+}
+
+#tokenBox,
+#output {
+  width: 100%;
+  min-height: 96px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+#output {
+  margin-bottom: 0;
+  background: #101827;
+  color: #e7edf7;
+  border-radius: 6px;
+  padding: 14px;
+}
+
+.products {
+  display: grid;
+  gap: 10px;
+}
+
+.product {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid #e1e6ed;
+  border-radius: 6px;
+  padding: 12px;
+}
+
+.product span,
+.empty,
+#baseUrl {
+  color: #586474;
+}
+
+.product span {
+  display: block;
+  margin-top: 4px;
+  font-size: 13px;
+}
+
+@media (max-width: 760px) {
+  .topbar,
+  .grid,
+  .product {
+    display: block;
+  }
+
+  .status,
+  .row-actions {
+    justify-content: flex-start;
+    margin-top: 12px;
+  }
+}

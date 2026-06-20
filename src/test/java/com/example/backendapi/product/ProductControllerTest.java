@@ -1,5 +1,6 @@
 package com.example.backendapi.product;
 
+import com.example.backendapi.audit.ApiLogService;
 import com.example.backendapi.security.JwtService;
 
 import org.junit.jupiter.api.Test;
@@ -37,6 +38,9 @@ class ProductControllerTest {
 
     @MockitoBean
     private UserDetailsService userDetailsService;
+
+    @MockitoBean
+    private ApiLogService apiLogService;
 
     @Test
     @WithMockUser(username = "vijay@example.com")

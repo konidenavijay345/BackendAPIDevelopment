@@ -57,6 +57,16 @@ public class JwtService {
         return claims(token).getSubject();
     }
 
+    /** Extracts the token expiration time after signature parsing succeeds. */
+    public Instant extractExpiration(String token) {
+        return claims(token).getExpiration().toInstant();
+    }
+
+    /** Returns how many whole seconds remain before this token expires. */
+    public long secondsUntilExpiration(String token) {
+        return Duration.between(Instant.now(), extractExpiration(token)).toSeconds();
+    }
+
     /** Confirms that the token belongs to the loaded user and has not expired. */
     public boolean isValid(String token, UserDetails user) {
         Claims claims = claims(token);

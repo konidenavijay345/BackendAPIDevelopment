@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.Arrays;
+
 /**
  * Configures Cross-Origin Resource Sharing (CORS) for browser clients.
  *
@@ -15,14 +17,17 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    private final String[] allowedOrigins;
+    private final String[] allowedOriginPatterns;
 
     /**
      * Converts the comma-separated configuration value into origins understood by Spring.
      * Constructor injection keeps configuration explicit and makes the class testable.
      */
-    public WebConfig(@Value("${app.cors.allowed-origins}") String allowedOrigins) {
-        this.allowedOrigins = allowedOrigins.split(",");
+    public WebConfig(@Value("${app.cors.allowed-origin-patterns}") String allowedOriginPatterns) {
+        this.allowedOriginPatterns = Arrays.stream(allowedOriginPatterns.split(","))
+                .map(String::trim)
+                .filter(origin -> !origin.isBlank())
+                .toArray(String[]::new);
     }
 
     /**
@@ -33,7 +38,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**")
-                .allowedOrigins(allowedOrigins)
+                .allowedOriginPatterns(allowedOriginPatterns)
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .maxAge(3600);

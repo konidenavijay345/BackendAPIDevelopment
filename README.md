@@ -41,13 +41,38 @@ Open Command Prompt and run:
 
 ```bat
 cd /d C:\Users\DELL\IdeaProjects\BackendAPIDevelopment
+run backend
+```
+
+This starts the backend and prints Spring Boot logs in the same console. Stop it with `Ctrl+C`.
+
+To stop a backend that is already running on the configured port:
+
+```bat
+stop backend
+```
+
+If you need custom database credentials or a production JWT secret, set them before running:
+
+```bat
+cd /d C:\Users\DELL\IdeaProjects\BackendAPIDevelopment
 set DB_USERNAME=root
 set DB_PASSWORD=your_mysql_password
 set JWT_SECRET=replace-this-with-a-random-secret-at-least-32-characters
-mvnw.cmd spring-boot:run
+run backend
 ```
 
-The API starts at `http://localhost:8080`. Keep that CMD window open while using Postman. Stop it with `Ctrl+C`.
+You can also copy `.env.example` to `.env`, fill in your MySQL password, and run `run backend`; the command loads `.env` automatically.
+
+The API starts at `http://localhost:8080`. Keep that CMD window open while using Postman.
+
+From PowerShell, use:
+
+```powershell
+cd C:\Users\DELL\IdeaProjects\BackendAPIDevelopment
+.\run backend
+.\stop backend
+```
 
 To build and run the packaged application instead:
 
@@ -158,7 +183,7 @@ if (!response.ok) throw await response.json();
 const page = await response.json();
 ```
 
-CORS defaults to `http://localhost:3000` and `http://localhost:5173`. Set `ALLOWED_ORIGINS` to comma-separated production frontend origins.
+CORS defaults to `http://localhost:3000`, `http://localhost:5173`, and `https://*.trycloudflare.com`. Set `ALLOWED_ORIGIN_PATTERNS` to comma-separated production frontend origins or origin patterns.
 
 ## Verification
 

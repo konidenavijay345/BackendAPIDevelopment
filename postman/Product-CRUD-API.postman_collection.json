@@ -75,7 +75,7 @@
             "url": "{{baseUrl}}/api/v1/products"
           }
         },
-        { "name": "List my products", "request": { "method": "GET", "url": "{{baseUrl}}/api/v1/products?page=0&size=20&sort=id,asc" } },
+        { "name": "List my products", "request": { "method": "GET", "url": "{{baseUrl}}/api/v1/products?page=0&size=5&sort=id,asc" } },
         { "name": "Get my product", "request": { "method": "GET", "url": "{{baseUrl}}/api/v1/products/{{productId}}" } },
         {
           "name": "Update my product",

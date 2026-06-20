@@ -67,6 +67,7 @@ public class ProductController {
     public ProductResponse update(
             @PathVariable Long id, @Valid @RequestBody ProductRequest request, Principal principal
     ) {
+        System.out.println("This is for reference");
         return service.update(principal.getName(), id, request);
     }
 

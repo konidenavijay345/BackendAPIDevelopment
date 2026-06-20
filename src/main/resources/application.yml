@@ -23,14 +23,22 @@ spring:
     locations: classpath:db/migration
 
 server:
-  port: ${SERVER_PORT:8080}
+  port: ${PORT:${SERVER_PORT:8080}}
+  tomcat:
+    basedir: .
+    accesslog:
+      enabled: true
+      directory: logs
+      prefix: api-access
+      suffix: .log
+      pattern: '%t %a "%r" %s %D'
   error:
     include-message: never
     include-stacktrace: never
 
 app:
   cors:
-    allowed-origins: ${ALLOWED_ORIGINS:http://localhost:3000,http://localhost:5173}
+    allowed-origin-patterns: ${ALLOWED_ORIGIN_PATTERNS:${ALLOWED_ORIGINS:http://localhost:3000,http://localhost:5173,https://*.trycloudflare.com}}
   jwt:
     secret: ${JWT_SECRET}
     expiration: PT10M
